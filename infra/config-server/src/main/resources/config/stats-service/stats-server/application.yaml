@@ -17,6 +17,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5433/ewm-stats
+    url: jdbc:postgresql://localhost:5432/ewm-stats
     username: user
     password: password
