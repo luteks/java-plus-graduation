@@ -1,50 +1,59 @@
 services:
-  stats-server:
-    build: ./stats-service/stats-server
-    container_name: stats-server
-    ports:
-      - "9090:9090"
-    depends_on:
-      - stats-db
-    environment:
-      - DB_NAME=statistic
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - DB_HOST=stats-db
-      - DB_PORT=5432
+#  stats-server:
+#    build: ./stats-service/stats-server
+#    container_name: stats-server
+#    ports:
+#      - "9090:9090"
+#    depends_on:
+#      - stats-db
+#    environment:
+#      - DB_NAME=statistic
+#      - POSTGRES_USER=admin
+#      - POSTGRES_PASSWORD=admin
+#      - DB_HOST=stats-db
+#      - DB_PORT=5432
 
   stats-db:
     image: postgres:16.1
     container_name: stats-db
     ports:
-      - "6540:5432"
+      - "5433:5432"
     environment:
-      - POSTGRES_DB=statistic
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ewm-stats
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
 
-  ewm-service:
-    container_name: ewm-service
-    build: ./main-service
-    ports:
-      - "8080:8080"
-    depends_on:
-      - stats-server
-      - ewm-db
-    environment:
-      - DB_NAME=ewm
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - DB_HOST=ewm-db
-      - DB_PORT=5432
+#  ewm-service:
+#    container_name: ewm-service
+#    build: ./core/main-service
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - stats-server
+#      - ewm-db
+#    environment:
+#      - DB_NAME=ewm
+#      - POSTGRES_USER=admin
+#      - POSTGRES_PASSWORD=admin
+#      - DB_HOST=ewm-db
+#      - DB_PORT=5432
 
   ewm-db:
     image: postgres:16.1
     container_name: ewm-db
     ports:
-      - "6541:5432"
+      - "5432:5432"
     environment:
-      - POSTGRES_DB=ewm
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ewm-main
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
