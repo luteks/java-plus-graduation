@@ -2,6 +2,7 @@ package ru.yandex.practicum.main.compilation.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.client.StatsClient;
 import ru.yandex.practicum.main.category.dto.EventCategoryMapper;
@@ -133,28 +134,47 @@ public class CompilationService {
     }
 
     public Map<Long, Integer> getEventsViewsMap(List<Long> eventsIds) {
-        List<String> uris = new ArrayList<>();
-        for (Long eventId : eventsIds) {
-            uris.add("/events/" + eventId);
+        if (eventsIds == null || eventsIds.isEmpty()) {
+            return new HashMap<>();
         }
-        List<HashMap<Object, Object>> stats = (List<HashMap<Object, Object>>) statClient.getStats(
-                "2000-01-01 00:00:00", LocalDateTime.now().format(formatter), uris, false).getBody();
-        Map<Long, Integer> eventViewsMap = new HashMap<>();
-        if (stats != null && !stats.isEmpty()) {
-            stats.forEach(map -> {
+
+        List<String> uris = eventsIds.stream()
+                .map(id -> "/events/" + id)
+                .toList();
+
+        ResponseEntity<Object> response = statClient.getStats(
+                "2000-01-01 00:00:00",
+                LocalDateTime.now().format(formatter),
+                uris,
+                false
+        );
+
+        Map<Long, Integer> viewsMap = new HashMap<>();
+
+        if (response.getBody() instanceof List<?> rawList && !rawList.isEmpty()) {
+            for (Object item : rawList) {
+                if (!(item instanceof Map<?, ?> map)) continue;
+
                 String uri = (String) map.get("uri");
-                String[] urisAsArr = uri.split("/");
-                Long id = Long.parseLong(urisAsArr[urisAsArr.length - 1]);
-                eventViewsMap.put(id, (Integer) map.get("hits"));
-            });
-        }
-        for (Long id : eventsIds) {
-            if (!eventViewsMap.containsKey(id)) {
-                eventViewsMap.put(id, 0);
+                if (uri == null || !uri.startsWith("/events/")) continue;
+
+                String[] parts = uri.split("/");
+                if (parts.length <= 2) continue;
+
+                String idStr = parts[parts.length - 1];
+                try {
+                    Long eventId = Long.parseLong(idStr);
+                    if (eventsIds.contains(eventId)) {
+                        Integer hits = map.get("hits") instanceof Number n ? n.intValue() : 0;
+                        viewsMap.put(eventId, hits);
+                    }
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
 
-        return eventViewsMap;
+        eventsIds.forEach(id -> viewsMap.putIfAbsent(id, 0));
+        return viewsMap;
     }
 
     private Set<EventShortDto> getEventsShorts(Set<Event> events) {
