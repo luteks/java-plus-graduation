@@ -1,6 +1,6 @@
 main:
   service:
-    name: ewm-main-service
+    name: main-service
 
 server:
   port: 0
