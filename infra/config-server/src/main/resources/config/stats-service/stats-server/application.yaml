@@ -1,6 +1,5 @@
 server:
   port: 0
-
 spring:
   sql:
     init:
@@ -18,6 +17,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5433/ewm-stats
-    username: user
+    url: jdbc:postgresql://localhost:5432/ewm-stats
+    username: postgres
     password: password

@@ -8,12 +8,7 @@ spring:
         - id: main-service
           uri: lb://main-service
           predicates:
-            - Path=/categories/**, /admin/**, /users/**, /events/**, /compilations/**
-        - id: stats-server
-          uri: lb://stats-server
-          predicates:
-            - Path=/hit/**, /stats/**
-
+            - Path=/**
 management:
   endpoint:
     gateway:
@@ -22,3 +17,9 @@ management:
     web:
       exposure:
         include: gateway
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: DEBUG

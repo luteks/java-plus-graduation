@@ -12,7 +12,8 @@ spring:
         use-random-policy: true
         max-interval: 6000
       fail-fast: true
-
+  profiles:
+    active: dev
 eureka:
   client:
     service-url:
