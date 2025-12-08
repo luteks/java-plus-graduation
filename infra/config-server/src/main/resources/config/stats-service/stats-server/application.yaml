@@ -1,6 +1,9 @@
 server:
   port: 0
+
 spring:
+  application:
+    name: stats-server
   sql:
     init:
       mode: always
@@ -17,6 +20,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/ewm-stats
+    url: jdbc:postgresql://localhost:5433/ewm-stats
     username: user
     password: password
