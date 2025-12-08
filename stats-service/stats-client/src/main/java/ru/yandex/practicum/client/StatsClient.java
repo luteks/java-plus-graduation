@@ -18,7 +18,7 @@ import java.util.Map;
 @Service
 public class StatsClient extends BaseClient {
 
-    private static final String SERVICE_ID = "STATS-SERVICE";
+    private static final String SERVICE_ID = "STATS-SERVER";
     private final DiscoveryClient discoveryClient;
     private final RetryTemplate retryTemplate;
 
