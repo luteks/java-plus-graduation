@@ -5,18 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.yandex.practicum</groupId>
-        <artifactId>explore-with-me</artifactId>
+        <artifactId>core</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core</artifactId>
+    <artifactId>user-service</artifactId>
 
-    <modules>
-        <module>event-service</module>
-        <module>requests-service</module>
-        <module>user-service</module>
-        <module>interaction-api</module>
-    </modules>
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-    <packaging>pom</packaging>
 </project>
