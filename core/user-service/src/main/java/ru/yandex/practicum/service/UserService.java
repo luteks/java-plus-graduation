@@ -5,10 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.user.dto.UserDto;
 import ru.yandex.practicum.mapper.UserMapper;
-import ru.yandex.practicum.user.model.User;
 import ru.yandex.practicum.repository.UserRepository;
+import ru.yandex.practicum.user.dto.UserDto;
+import ru.yandex.practicum.user.model.User;
 
 import java.util.List;
 import java.util.Optional;

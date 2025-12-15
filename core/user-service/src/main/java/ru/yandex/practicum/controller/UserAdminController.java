@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.user.dto.UserDto;
 import ru.yandex.practicum.service.UserService;
+import ru.yandex.practicum.user.dto.UserDto;
 
 import java.util.List;
 

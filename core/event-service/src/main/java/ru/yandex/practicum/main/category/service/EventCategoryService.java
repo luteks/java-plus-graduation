@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.category.dto.EventCategoryDto;
-import ru.yandex.practicum.main.category.dto.EventCategoryMapper;
 import ru.yandex.practicum.category.model.EventCategory;
-import ru.yandex.practicum.main.category.repository.EventCategoryRepository;
 import ru.yandex.practicum.event.model.Event;
-import ru.yandex.practicum.main.event.repository.EventRepository;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.main.category.dto.EventCategoryMapper;
+import ru.yandex.practicum.main.category.repository.EventCategoryRepository;
+import ru.yandex.practicum.main.event.repository.EventRepository;
 
 import java.util.List;
 import java.util.Optional;

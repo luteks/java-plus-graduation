@@ -3,15 +3,15 @@ package ru.yandex.practicum.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.event.model.Event;
-import ru.yandex.practicum.service.EventService;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.request.dto.RequestDto;
 import ru.yandex.practicum.mapper.RequestMapper;
+import ru.yandex.practicum.repository.RequestRepository;
+import ru.yandex.practicum.request.dto.RequestDto;
 import ru.yandex.practicum.request.dto.RequestStatusUpdateRequest;
 import ru.yandex.practicum.request.dto.RequestStatusUpdateResponse;
 import ru.yandex.practicum.request.model.ParticipationRequest;
-import ru.yandex.practicum.repository.RequestRepository;
+import ru.yandex.practicum.service.EventService;
 import ru.yandex.practicum.user.model.User;
 
 import java.time.LocalDateTime;

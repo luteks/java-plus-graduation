@@ -9,16 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.comment.dto.CommentDto;
 import ru.yandex.practicum.comment.dto.MergeCommentRequest;
-import ru.yandex.practicum.main.comment.mapper.CommentMapper;
 import ru.yandex.practicum.comment.model.Comment;
-import ru.yandex.practicum.main.comment.repository.CommentRepository;
 import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.event.model.EventState;
-import ru.yandex.practicum.main.event.repository.EventRepository;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.PublicationException;
-import ru.yandex.practicum.user.model.User;
+import ru.yandex.practicum.main.comment.mapper.CommentMapper;
+import ru.yandex.practicum.main.comment.repository.CommentRepository;
+import ru.yandex.practicum.main.event.repository.EventRepository;
 import ru.yandex.practicum.repository.UserRepository;
+import ru.yandex.practicum.user.model.User;
 
 import java.util.Collection;
 
