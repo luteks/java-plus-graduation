@@ -11,7 +11,7 @@ import ru.yandex.practicum.request.dto.RequestDto;
 import ru.yandex.practicum.request.dto.RequestStatusUpdateRequest;
 import ru.yandex.practicum.request.dto.RequestStatusUpdateResponse;
 import ru.yandex.practicum.request.model.ParticipationRequest;
-import ru.yandex.practicum.service.EventService;
+import ru.yandex.practicum.main.event.service.EventService;
 import ru.yandex.practicum.user.model.User;
 
 import java.time.LocalDateTime;
