@@ -1,15 +1,15 @@
 package ru.yandex.practicum.main.event.mapper;
 
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.main.category.dto.EventCategoryDto;
-import ru.yandex.practicum.main.category.model.EventCategory;
-import ru.yandex.practicum.main.event.dto.CreateNewEventDto;
-import ru.yandex.practicum.main.event.dto.EventDto;
-import ru.yandex.practicum.main.event.dto.EventShortDto;
-import ru.yandex.practicum.main.event.model.Event;
-import ru.yandex.practicum.main.event.model.EventState;
-import ru.yandex.practicum.main.user.dto.UserShortDto;
-import ru.yandex.practicum.main.user.model.User;
+import ru.yandex.practicum.category.dto.EventCategoryDto;
+import ru.yandex.practicum.category.model.EventCategory;
+import ru.yandex.practicum.event.dto.CreateNewEventDto;
+import ru.yandex.practicum.event.dto.EventDto;
+import ru.yandex.practicum.event.dto.EventShortDto;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.user.dto.UserShortDto;
+import ru.yandex.practicum.user.model.User;
 
 import java.time.ZoneId;
 import java.time.ZoneOffset;

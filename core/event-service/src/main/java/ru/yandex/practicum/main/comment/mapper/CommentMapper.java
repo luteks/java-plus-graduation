@@ -1,11 +1,11 @@
 package ru.yandex.practicum.main.comment.mapper;
 
 import org.mapstruct.*;
-import ru.yandex.practicum.main.comment.dto.CommentDto;
-import ru.yandex.practicum.main.comment.dto.MergeCommentRequest;
-import ru.yandex.practicum.main.comment.model.Comment;
-import ru.yandex.practicum.main.event.model.Event;
-import ru.yandex.practicum.main.user.model.User;
+import ru.yandex.practicum.comment.dto.CommentDto;
+import ru.yandex.practicum.comment.dto.MergeCommentRequest;
+import ru.yandex.practicum.comment.model.Comment;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.user.model.User;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface CommentMapper {

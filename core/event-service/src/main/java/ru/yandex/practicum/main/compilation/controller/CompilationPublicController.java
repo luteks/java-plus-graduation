@@ -5,7 +5,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.main.compilation.dto.CompilationDto;
+import ru.yandex.practicum.compilation.dto.CompilationDto;
 import ru.yandex.practicum.main.compilation.service.CompilationService;
 
 import java.util.List;

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.main.category.dto.EventCategoryDto;
+import ru.yandex.practicum.category.dto.EventCategoryDto;
 import ru.yandex.practicum.main.category.service.EventCategoryService;
 
 import java.util.List;

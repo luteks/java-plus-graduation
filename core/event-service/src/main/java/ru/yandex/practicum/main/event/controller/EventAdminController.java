@@ -10,8 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.client.StatsClient;
 import ru.yandex.practicum.dto.HitDto;
-import ru.yandex.practicum.main.event.dto.EventDto;
-import ru.yandex.practicum.main.event.dto.UpdateEventAdminDto;
+import ru.yandex.practicum.event.dto.EventDto;
+import ru.yandex.practicum.event.dto.UpdateEventAdminDto;
 import ru.yandex.practicum.main.event.service.EventService;
 
 import java.time.LocalDateTime;

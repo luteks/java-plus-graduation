@@ -5,11 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.yandex.practicum.main.category.model.EventCategory;
-import ru.yandex.practicum.main.event.model.Event;
-import ru.yandex.practicum.main.event.model.EventState;
-import ru.yandex.practicum.main.request.model.RequestStatus;
-import ru.yandex.practicum.main.user.model.User;
+import ru.yandex.practicum.category.model.EventCategory;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.request.model.RequestStatus;
+import ru.yandex.practicum.user.model.User;
 
 import java.time.Instant;
 import java.util.List;

@@ -1,11 +1,11 @@
 package ru.yandex.practicum.main.compilation.mapper;
 
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.main.compilation.dto.CompilationDto;
-import ru.yandex.practicum.main.compilation.dto.CompilationRequestDto;
-import ru.yandex.practicum.main.compilation.model.Compilation;
-import ru.yandex.practicum.main.event.dto.EventShortDto;
-import ru.yandex.practicum.main.event.model.Event;
+import ru.yandex.practicum.compilation.dto.CompilationDto;
+import ru.yandex.practicum.compilation.dto.CompilationRequestDto;
+import ru.yandex.practicum.compilation.model.Compilation;
+import ru.yandex.practicum.event.dto.EventShortDto;
+import ru.yandex.practicum.event.model.Event;
 
 import java.util.Set;
 

@@ -2,7 +2,8 @@ package ru.yandex.practicum.main.category.dto;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.main.category.model.EventCategory;
+import ru.yandex.practicum.category.dto.EventCategoryDto;
+import ru.yandex.practicum.category.model.EventCategory;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

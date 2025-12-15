@@ -2,7 +2,7 @@ package ru.yandex.practicum.main.category.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.main.category.model.EventCategory;
+import ru.yandex.practicum.category.model.EventCategory;
 
 import java.util.Optional;
 

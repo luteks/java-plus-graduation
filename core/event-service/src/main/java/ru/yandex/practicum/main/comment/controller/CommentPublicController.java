@@ -3,7 +3,7 @@ package ru.yandex.practicum.main.comment.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.main.comment.dto.CommentDto;
+import ru.yandex.practicum.comment.dto.CommentDto;
 import ru.yandex.practicum.main.comment.service.CommentService;
 
 import java.util.Collection;

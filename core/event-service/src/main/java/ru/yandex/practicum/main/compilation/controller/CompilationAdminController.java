@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.main.compilation.dto.CompilationDto;
-import ru.yandex.practicum.main.compilation.dto.CompilationRequestDto;
+import ru.yandex.practicum.compilation.dto.CompilationDto;
+import ru.yandex.practicum.compilation.dto.CompilationRequestDto;
 import ru.yandex.practicum.main.compilation.service.CompilationService;
 
 

@@ -7,25 +7,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.client.StatsClient;
+import ru.yandex.practicum.event.dto.*;
 import ru.yandex.practicum.main.category.dto.EventCategoryMapper;
-import ru.yandex.practicum.main.category.model.EventCategory;
+import ru.yandex.practicum.category.model.EventCategory;
 import ru.yandex.practicum.main.category.repository.EventCategoryRepository;
-import ru.yandex.practicum.main.event.dto.*;
 import ru.yandex.practicum.main.event.mapper.EventMapper;
-import ru.yandex.practicum.main.event.model.AdminEventAction;
-import ru.yandex.practicum.main.event.model.Event;
-import ru.yandex.practicum.main.event.model.EventState;
-import ru.yandex.practicum.main.event.model.Location;
+import ru.yandex.practicum.event.model.AdminEventAction;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.EventState;
+import ru.yandex.practicum.event.model.Location;
 import ru.yandex.practicum.main.event.repository.EventRepository;
 import ru.yandex.practicum.main.event.repository.LocationRepository;
-import ru.yandex.practicum.main.exception.model.BadRequestException;
-import ru.yandex.practicum.main.exception.model.ConflictException;
-import ru.yandex.practicum.main.exception.model.NotFoundException;
-import ru.yandex.practicum.main.request.model.ParticipationRequest;
-import ru.yandex.practicum.main.request.repository.RequestRepository;
-import ru.yandex.practicum.main.user.dto.UserMapper;
-import ru.yandex.practicum.main.user.model.User;
-import ru.yandex.practicum.main.user.service.UserService;
+import ru.yandex.practicum.exception.BadRequestException;
+import ru.yandex.practicum.exception.ConflictException;
+import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.request.model.ParticipationRequest;
+import ru.yandex.practicum.repository.RequestRepository;
+import ru.yandex.practicum.mapper.UserMapper;
+import ru.yandex.practicum.user.model.User;
+import ru.yandex.practicum.service.UserService;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.time.LocalDateTime.now;
-import static ru.yandex.practicum.main.request.model.RequestStatus.CONFIRMED;
+import static ru.yandex.practicum.request.model.RequestStatus.CONFIRMED;
 
 @Service
 public class EventService {
