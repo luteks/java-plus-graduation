@@ -1,57 +1,60 @@
 package ru.yandex.practicum.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.dto.user.NewUserRequestDto;
+import ru.yandex.practicum.dto.user.UserDto;
+import ru.yandex.practicum.dto.user.UserShortDto;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.mapper.UserMapper;
+import ru.yandex.practicum.model.User;
 import ru.yandex.practicum.repository.UserRepository;
-import ru.yandex.practicum.user.dto.UserDto;
-import ru.yandex.practicum.user.model.User;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserDto create(NewUserRequestDto requestDto) {
+        userRepository.findByEmail(requestDto.getEmail())
+                .ifPresent(u -> { throw new ConflictException("Email " + requestDto.getEmail() + " уже используется"); });
+
+        User user = UserMapper.toUser(requestDto);
+        User saved = userRepository.save(user);
+        return UserMapper.toUserDto(saved);
     }
 
-    public List<UserDto> getAll(List<Long> usersId, Pageable pageable) {
-        if (usersId == null) {
-            return userRepository.findAll(pageable).stream()
-                    .map(UserMapper::toUserDtoFromUser).toList();
-        } else {
-            return userRepository.findAllByIdIn(usersId, pageable).stream()
-                    .map(UserMapper::toUserDtoFromUser).toList();
+    public List<UserDto> getAll(List<Long> ids, Pageable pageable) {
+        if (ids == null || ids.isEmpty()) {
+            return userRepository.findAll(pageable)
+                    .map(UserMapper::toUserDto)
+                    .toList();
         }
+        return userRepository.findAllByIdIn(ids, pageable)
+                .map(UserMapper::toUserDto)
+                .toList();
     }
 
-    public UserDto getById(long userId) {
-        return UserMapper.toUserDtoFromUser(getUserIfExist(userId));
+    public UserDto getById(Long userId) {
+        return UserMapper.toUserDto(getUserIfExist(userId));
     }
 
-    public UserDto create(UserDto userDto) {
-        Optional<User> userWithSameName = userRepository.findByName(userDto.getName());
-        if (userWithSameName.isPresent()) {
-            throw new ConflictException("User " + userDto.getName() + " уже существует!");
-        }
-
-        return UserMapper.toUserDtoFromUser(userRepository.save(UserMapper.toUserFromUserDto(userDto)));
-    }
-
-    public void delete(long userId) {
+    public void delete(Long userId) {
         userRepository.delete(getUserIfExist(userId));
     }
 
-    public User getUserIfExist(long userId) {
+    public User getUserIfExist(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User c id" + userId + " не существует!"));
+                .orElseThrow(() -> new NotFoundException("User с id " + userId + " не существует"));
+    }
+
+    public List<UserShortDto> getShortByIds(List<Long> ids) {
+        return userRepository.findAllById(ids).stream()
+                .map(UserMapper::toUserShortDto)
+                .toList();
     }
 }

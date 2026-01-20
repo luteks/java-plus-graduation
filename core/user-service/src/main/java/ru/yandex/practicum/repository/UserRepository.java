@@ -4,8 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.user.model.User;
-
+import ru.yandex.practicum.model.User;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,5 +13,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByIdIn(List<Long> ids, Pageable pageable);
 
-    Optional<User> findByName(String name);
+    Optional<User> findByEmail(String email);
 }

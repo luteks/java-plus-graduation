@@ -1,3 +1,6 @@
+main:
+  service:
+    name: event-service
 server:
   port: 0
 spring:
@@ -20,6 +23,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/ewm-main
-    username: user
+    url: jdbc:postgresql://localhost:5432/ewm-events
+    username: postgres
     password: password
