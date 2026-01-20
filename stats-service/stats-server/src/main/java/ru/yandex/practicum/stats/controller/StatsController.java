@@ -24,7 +24,7 @@ public class StatsController {
         this.statsService = statsService;
     }
 
-    @PostMapping("/hit")
+    @PostMapping("/hits")
     @ResponseStatus(HttpStatus.CREATED)
     void addHit(@Valid @RequestBody HitDto endpointHitDto) {
         log.info("Поступил запрос POST /hit на создание hit {}", endpointHitDto);
