@@ -20,7 +20,6 @@ public class StatsClient extends BaseClient {
 
     private static final String SERVICE_ID = "STATS-SERVER";
     private final DiscoveryClient discoveryClient;
-    private final RetryTemplate retryTemplate;
 
     @Autowired
     public StatsClient(RestTemplateBuilder builder, DiscoveryClient discoveryClient) {
