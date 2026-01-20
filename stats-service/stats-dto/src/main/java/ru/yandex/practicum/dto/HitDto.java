@@ -21,4 +21,10 @@ public class HitDto {
     private String ip;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime timestamp;
+    public HitDto(String ip, String app, String uri, LocalDateTime timestamp) {
+        this.ip = ip;
+        this.app = app;
+        this.uri = uri;
+        this.timestamp = timestamp;
+    }
 }
