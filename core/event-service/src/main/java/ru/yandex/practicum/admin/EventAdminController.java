@@ -36,7 +36,7 @@ public class EventAdminController {
                                  @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") int from,
                                  @Positive @RequestParam(value = "size", defaultValue = "10") int size,
                                  HttpServletRequest request) {
-        statClient.create(new HitDto(request.getRemoteAddr(), "app", "/events", LocalDateTime.now()));
+        statClient.create(new HitDto(request.getRemoteAddr(), "ewm-main-service", "/events", LocalDateTime.now()));
 
         return eventService.getAll(users, states, categories, rangeStart, rangeEnd, from, size);
     }
