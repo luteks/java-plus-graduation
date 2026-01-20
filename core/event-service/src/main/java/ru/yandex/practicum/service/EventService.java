@@ -472,7 +472,7 @@ public class EventService {
                 if (uri != null && uri.startsWith("/events/")) {
                     try {
                         Long eventId = Long.parseLong(uri.substring(uri.lastIndexOf('/') + 1));
-                        Object hitsObject = stat.get("hits");
+                        Object hitsObject = stat.get("hit");
                         if (hitsObject instanceof Number) {
                             viewsMap.put(eventId, ((Number) hitsObject).intValue());
                         }
