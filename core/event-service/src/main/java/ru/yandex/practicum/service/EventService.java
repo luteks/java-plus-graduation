@@ -128,7 +128,7 @@ public class EventService {
 
         UserShortDto initiator = getInitiator(saved.getOwnerId());
         Long confirmed = getConfirmedCount(saved.getId());
-        Integer views = getViews(saved.getId());
+        Integer views = 0;
 
         return eventMapper.toEventDto(
                 saved,
