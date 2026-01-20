@@ -425,7 +425,7 @@ public class EventService {
                 return 0;
             }
 
-            Object hitsObject = stats.get(0).get("hits");
+            Object hitsObject = stats.get(0).get("hit");
             if (hitsObject instanceof Number) {
                 return ((Number) hitsObject).intValue();
             }
