@@ -25,6 +25,7 @@ project: Maven
 --
 Микросервисы должен друг друга общается через с помощью FeignClient,из модули Interaction-api, Для отказоустойчивости мы используем Circuit Breaker
 
+
 ---
 1. Event-Service
    Управление событиями:
