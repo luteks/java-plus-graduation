@@ -326,7 +326,7 @@ public class EventService {
 
         statsClient.create(new HitDto(
                 request.getRemoteAddr(),
-                "app",
+                "ewm-main-service",
                 request.getRequestURI(),
                 LocalDateTime.now()
         ));

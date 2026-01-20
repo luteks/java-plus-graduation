@@ -31,7 +31,7 @@ spring:
         - id: stats-service
           uri: lb://STATS-SERVER
           predicates:
-            - Path=/hits,/stats/**
+            - Path=/hit,/stats/**
 
 management:
   endpoints:

@@ -72,6 +72,6 @@ public class StatsClient extends BaseClient {
 
     public ResponseEntity<Object> create(HitDto hitDto) {
         String baseUrl = getBaseUrl();
-        return post(baseUrl + "/hits", hitDto);
+        return post(baseUrl + "/hit", hitDto);
     }
 }
