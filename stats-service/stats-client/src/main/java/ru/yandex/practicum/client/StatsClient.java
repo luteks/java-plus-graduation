@@ -25,31 +25,18 @@ public class StatsClient extends BaseClient {
     @Autowired
     public StatsClient(RestTemplateBuilder builder, DiscoveryClient discoveryClient) {
         super(builder
-                .setConnectTimeout(java.time.Duration.ofSeconds(5))
-                .setReadTimeout(java.time.Duration.ofSeconds(10))
+                .setConnectTimeout(java.time.Duration.ofSeconds(2))
+                .setReadTimeout(java.time.Duration.ofSeconds(3))
                 .build());
-
         this.discoveryClient = discoveryClient;
-
-        RetryTemplate template = new RetryTemplate();
-        FixedBackOffPolicy backOff = new FixedBackOffPolicy();
-        backOff.setBackOffPeriod(3000L);
-        template.setBackOffPolicy(backOff);
-
-        MaxAttemptsRetryPolicy retryPolicy = new MaxAttemptsRetryPolicy(3);
-        template.setRetryPolicy(retryPolicy);
-
-        this.retryTemplate = template;
     }
 
     private String getBaseUrl() {
-        ServiceInstance instance = retryTemplate.execute(ctx -> {
-            List<ServiceInstance> instances = discoveryClient.getInstances(SERVICE_ID);
-            if (instances == null || instances.isEmpty()) {
-                throw new RuntimeException("Stats-service не найден");
-            }
-            return instances.get(0);
-        });
+        List<ServiceInstance> instances = discoveryClient.getInstances(SERVICE_ID);
+        if (instances == null || instances.isEmpty()) {
+            throw new RuntimeException("Stats-service не найден");
+        }
+        ServiceInstance instance = instances.get(0);
         return "http://" + instance.getHost() + ":" + instance.getPort();
     }
 
