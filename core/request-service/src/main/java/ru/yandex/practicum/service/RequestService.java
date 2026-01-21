@@ -52,6 +52,10 @@ public class RequestService {
             throw new NotFoundException("Событие с id " + eventId + " не найдено");
         }
 
+        if (event == null) {
+            throw new NotFoundException("Событие не найдено или недоступно");
+        }
+
         if (!Objects.equals(event.getOwnerId(), userId)) {
             throw new ForbiddenException("User с id " + userId + " не владелец события " + eventId);
         }
@@ -193,6 +197,10 @@ public class RequestService {
         } catch (Exception e) {
             log.error("Ошибка Feign клиента при создании заявки: {}", e.getMessage());
             throw new NotFoundException("Не удалось найти пользователя или событие");
+        }
+
+        if (event == null) {
+            throw new NotFoundException("Событие не найдено или недоступно");
         }
 
         if (Objects.equals(user.getId(), event.getOwnerId())) {
