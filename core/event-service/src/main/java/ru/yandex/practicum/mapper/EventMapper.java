@@ -45,6 +45,7 @@ public interface EventMapper {
     @Mapping(target = "initiator", source = "owner")
     @Mapping(target = "paid", source = "event.paid")
     @Mapping(target = "participantLimit", source = "event.participantLimit")
+    @Mapping(target = "confirmedRequests", source = "confirmedRequests")
     @Mapping(target = "views", source = "views")
     @Mapping(target = "createdOn", source = "event.createdOn")
     @Mapping(target = "publishedOn", source = "event.publishedOn")
@@ -67,6 +68,7 @@ public interface EventMapper {
     @Mapping(target = "eventDate", source = "event.eventDateTime")
     @Mapping(target = "initiator", source = "owner")
     @Mapping(target = "paid", source = "event.paid")
+    @Mapping(target = "confirmedRequests", source = "confirmedRequests")
     @Mapping(target = "views", source = "views")
     void updateEventShortDto(
             Event event,
@@ -76,6 +78,7 @@ public interface EventMapper {
             Integer views,
             @MappingTarget EventShortDto eventShortDto
     );
+
 
     default EventDto toEventDto(
             Event event,
@@ -106,6 +109,7 @@ public interface EventMapper {
         updateEventShortDto(event, categoryDto, owner, confirmedRequests, views, eventShortDto);
         return eventShortDto;
     }
+
 
     default Instant map(LocalDateTime dateTime) {
         return dateTime == null ? null : dateTime.toInstant(ZoneOffset.UTC);
