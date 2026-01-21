@@ -8,3 +8,11 @@ CREATE TABLE IF NOT EXISTS participation_requests (
     status            VARCHAR(20)                             NOT NULL,
     CONSTRAINT pk_participation_requests PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS event_info (
+    id                 BIGINT PRIMARY KEY,
+    owner_id           BIGINT NOT NULL,
+    is_moderated       BOOLEAN DEFAULT TRUE,
+    participant_limit  INTEGER NOT NULL DEFAULT 0,
+    published_on       TIMESTAMP WITHOUT TIME ZONE
+);

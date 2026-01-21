@@ -17,7 +17,9 @@ import ru.yandex.practicum.feign.request.RequestClient;
 import ru.yandex.practicum.feign.request.RequestClientSingle;
 import ru.yandex.practicum.feign.user.UserClient;
 import ru.yandex.practicum.mapper.RequestMapper;
+import ru.yandex.practicum.model.EventInfo;
 import ru.yandex.practicum.model.ParticipationRequest;
+import ru.yandex.practicum.repository.EventInfoRepository;
 import ru.yandex.practicum.repository.RequestRepository;
 
 import java.time.LocalDateTime;
@@ -37,6 +39,7 @@ public class RequestService {
     private final EventClient eventClient;
     private final RequestClient requestClient;
     private final RequestClientSingle requestClientSingle;
+    private final EventInfoRepository eventInfoRepository;
 
     public List<RequestDto> getEventRequests(Long userId, Long eventId) {
         UserShortDto user;
@@ -74,85 +77,76 @@ public class RequestService {
     }
 
     public RequestStatusUpdateResponse updateRequest(Long userId, Long eventId, RequestStatusUpdateRequest requestDto) {
-        log.info("START updateRequest for userId: {}, eventId: {}, requestDto: {}", userId, eventId, requestDto);
+        log.info("START updateRequest for userId: {}, eventId: {}", userId, eventId);
 
+        // Валидация
         if (requestDto == null || requestDto.getRequestIds() == null || requestDto.getStatus() == null) {
-            log.error("Invalid request data: requestDto is null or contains null fields");
             throw new ConflictException("Некорректные данные для обновления заявки");
         }
 
-        UserShortDto user;
-        EventShortForRequestDto event;
-        try {
-            user = userClient.getById(userId);
-            event = eventClient.getById(eventId);
-        } catch (Exception e) {
-            log.error("Feign client error while fetching user or event: {}", e.getMessage(), e);
-            throw new NotFoundException("Не удалось найти пользователя или событие");
-        }
+        // Получаем пользователя (можно тоже кэшировать, но оставим Feign для user)
+        UserShortDto user = userClient.getById(userId);
+        if (user == null) throw new NotFoundException("Пользователь не найден");
 
-        if (user == null) {
-            throw new NotFoundException("Пользователь не найден");
-        }
-        if (event == null) {
-            throw new NotFoundException("Событие не найдено");
-        }
-        if (event.getOwnerId() == null) {
-            throw new NotFoundException("Событие не имеет владельца");
-        }
+        // Получаем данные события ЛОКАЛЬНО
+        EventInfo event = eventInfoRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Событие не найдено"));
+
         if (!Objects.equals(user.getId(), event.getOwnerId())) {
             throw new ForbiddenException("User с id " + userId + " не владелец события " + eventId);
         }
 
+        // Проверка модерации и лимита
         if (!event.getIsModerated() || event.getParticipantLimit() == 0) {
-            log.info("Подтверждение заявок не требуется для события {}", eventId);
             throw new ConflictException("Запрос составлен некорректно.");
         }
 
+        // Получаем заявки
         List<ParticipationRequest> requests = requestRepository.findAllByIdIn(requestDto.getRequestIds());
         if (requests.isEmpty()) {
             throw new ConflictException("Заявки с указанными ID не найдены");
         }
 
+        // Проверяем, что все заявки относятся к этому событию и в статусе PENDING
         for (ParticipationRequest r : requests) {
             if (!Objects.equals(r.getEventId(), eventId)) {
-                throw new ConflictException("Заявка с ID " + r.getId() + " не относится к событию " + eventId);
+                throw new ConflictException("Заявка не относится к событию");
             }
             if (r.getStatus() != RequestStatus.PENDING) {
                 throw new ConflictException("Статус можно изменить только у заявок в состоянии ожидания");
             }
         }
 
+        // Считаем подтверждённые
         Long confirmedCount = requestRepository.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
         if (confirmedCount >= event.getParticipantLimit()) {
             throw new ConflictException("Лимит участников достигнут");
         }
 
-        Set<RequestDto> confirmedRequests = new HashSet<>();
-        Set<RequestDto> rejectedRequests = new HashSet<>();
+        // Обновляем статусы
+        Set<RequestDto> confirmed = new HashSet<>();
+        Set<RequestDto> rejected = new HashSet<>();
 
         List<ParticipationRequest> toSave = new ArrayList<>();
-        for (ParticipationRequest request : requests) {
+        for (ParticipationRequest req : requests) {
             if (requestDto.getStatus() == RequestStatus.CONFIRMED) {
                 if (confirmedCount < event.getParticipantLimit()) {
-                    request.setStatus(RequestStatus.CONFIRMED);
-                    confirmedRequests.add(RequestMapper.fromRequestToRequestDto(request));
+                    req.setStatus(RequestStatus.CONFIRMED);
+                    confirmed.add(RequestMapper.fromRequestToRequestDto(req));
                     confirmedCount++;
                 } else {
-                    request.setStatus(RequestStatus.REJECTED);
-                    rejectedRequests.add(RequestMapper.fromRequestToRequestDto(request));
+                    req.setStatus(RequestStatus.REJECTED);
+                    rejected.add(RequestMapper.fromRequestToRequestDto(req));
                 }
             } else if (requestDto.getStatus() == RequestStatus.REJECTED) {
-                request.setStatus(RequestStatus.REJECTED);
-                rejectedRequests.add(RequestMapper.fromRequestToRequestDto(request));
+                req.setStatus(RequestStatus.REJECTED);
+                rejected.add(RequestMapper.fromRequestToRequestDto(req));
             }
-            toSave.add(request);
+            toSave.add(req);
         }
 
         requestRepository.saveAll(toSave);
-
-        log.info("END updateRequest. Confirmed: {}, Rejected: {}", confirmedRequests.size(), rejectedRequests.size());
-        return new RequestStatusUpdateResponse(confirmedRequests, rejectedRequests);
+        return new RequestStatusUpdateResponse(confirmed, rejected);
     }
 
     public List<RequestDto> getByUserId(Long userId) {
@@ -176,7 +170,15 @@ public class RequestService {
             log.error("Ошибка Feign клиента при создании заявки: {}", e.getMessage());
             throw new NotFoundException("Не удалось найти пользователя или событие");
         }
-
+        eventInfoRepository.save(
+                EventInfo.builder()
+                        .id(eventId)
+                        .ownerId(event.getOwnerId())
+                        .isModerated(event.getIsModerated())
+                        .participantLimit(event.getParticipantLimit())
+                        .publishedOn(event.getPublishedOn())
+                        .build()
+        );
         if (user == null) {
             throw new NotFoundException("Пользователь не найден");
         }
