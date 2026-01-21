@@ -61,6 +61,7 @@ public class Event {
     @Column(nullable = false)
     private EventState state;
 
+    // НОВОЕ ПОЛЕ
     @Column(name = "confirmed_requests", nullable = false)
     private Long confirmedRequests = 0L;
 }
