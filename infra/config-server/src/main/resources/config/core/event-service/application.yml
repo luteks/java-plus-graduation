@@ -1,9 +1,20 @@
 server:
   port: 0
 
-stat:
+grpc:
   client:
-    url: stats-server
+    analyzer:
+      address: "discovery:///analyzer"
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: PLAINTEXT
+    collector:
+      address: "discovery:///collector"
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: PLAINTEXT
+
+
 main:
   service:
     app:
