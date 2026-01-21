@@ -1,6 +1,7 @@
 package ru.yandex.practicum.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import ru.yandex.practicum.dto.event.EventShortDto;
 import ru.yandex.practicum.dto.user.UserShortDto;
 import ru.yandex.practicum.exception.BadRequestException;
 import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.feign.request.RequestClient;
 import ru.yandex.practicum.feign.user.UserClient;
 import ru.yandex.practicum.mapper.CompilationMapper;
 import ru.yandex.practicum.mapper.EventCategoryMapper;
@@ -19,34 +21,36 @@ import ru.yandex.practicum.model.Compilation;
 import ru.yandex.practicum.model.Event;
 import ru.yandex.practicum.repository.CompilationRepository;
 import ru.yandex.practicum.repository.EventRepository;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import org.springframework.data.domain.Pageable;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CompilationService {
 
     private final CompilationRepository compilationRepository;
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
     private final UserClient userClient;
+    private final RequestClient requestClient; // ← ВОССТАНОВЛЕНО
     private final StatsClient statClient;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public List<CompilationDto> getAll(boolean pinned, int from, int size) {
-        Pageable pageable = PageRequest.of(from / size, size);
+        PageRequest pageable = PageRequest.of(from / size, size);
         List<Compilation> compilations = compilationRepository.getAllByPinned(pinned, pageable).getContent();
 
-        List<CompilationDto> result = new ArrayList<>();
-        for (Compilation compilation : compilations) {
-            Set<EventShortDto> items = getEventsShorts(compilation.getEvents());
-            result.add(CompilationMapper.toDtoFromCompilation(compilation, items));
-        }
-        return result;
+        return compilations.stream()
+                .map(compilation -> {
+                    Set<EventShortDto> items = getEventsShorts(compilation.getEvents());
+                    return CompilationMapper.toDtoFromCompilation(compilation, items);
+                })
+                .collect(Collectors.toList());
     }
 
     public CompilationDto getById(long id) {
@@ -133,7 +137,7 @@ public class CompilationService {
                         String uri = (String) map.get("uri");
                         if (uri != null && uri.startsWith("/events/")) {
                             Long eventId = Long.parseLong(uri.substring("/events/".length()));
-                            Integer hits = map.get("hits") instanceof Number n ? n.intValue() : 0;
+                            Integer hits = map.get("hits") instanceof Number n ? n.intValue() : 0; // ← "hits"
                             viewsMap.put(eventId, hits);
                         }
                     }
@@ -142,6 +146,7 @@ public class CompilationService {
             eventIds.forEach(id -> viewsMap.putIfAbsent(id, 0));
             return viewsMap;
         } catch (Exception e) {
+            log.warn("Не удалось получить views для событий {}: {}", eventIds, e.getMessage());
             return eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0));
         }
     }
@@ -157,8 +162,12 @@ public class CompilationService {
 
         // confirmedRequests
         Map<Long, Long> confirmedMap;
-        confirmedMap = eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0L));
-
+        try {
+            confirmedMap = requestClient.getConfirmedCounts(eventIds);
+        } catch (Exception e) {
+            log.warn("Не удалось получить confirmedRequests для событий {}: {}", eventIds, e.getMessage());
+            confirmedMap = eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0L));
+        }
 
         // initiator
         Map<Long, UserShortDto> initiatorMap;
@@ -166,6 +175,7 @@ public class CompilationService {
             List<UserShortDto> users = userClient.getByIds(ownerIds);
             initiatorMap = users.stream().collect(Collectors.toMap(UserShortDto::getId, u -> u));
         } catch (Exception e) {
+            log.warn("Не удалось получить пользователей {}: {}", ownerIds, e.getMessage());
             initiatorMap = ownerIds.stream()
                     .collect(Collectors.toMap(id -> id, id -> new UserShortDto(id, "Unknown User")));
         }
@@ -173,7 +183,6 @@ public class CompilationService {
         // views
         Map<Long, Integer> viewsMap = getEventsViewsMap(eventIds);
 
-        // Маппинг — без final переменных
         Map<Long, UserShortDto> finalInitiatorMap = initiatorMap;
         Map<Long, Long> finalConfirmedMap = confirmedMap;
         return eventList.stream()

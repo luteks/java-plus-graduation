@@ -20,6 +20,7 @@ import ru.yandex.practicum.enums.UserEventActions;
 import ru.yandex.practicum.exception.BadRequestException;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
+import ru.yandex.practicum.feign.request.RequestClient;
 import ru.yandex.practicum.feign.user.UserClient;
 import ru.yandex.practicum.mapper.EventCategoryMapper;
 import ru.yandex.practicum.mapper.EventMapper;
@@ -50,6 +51,7 @@ public class EventService {
     private final StatsClient statsClient;
     private final EventMapper eventMapper;
     private final StatsHitAsyncService statsHitAsyncService;
+    private final RequestClient requestClient;
 
     public EventDto create(CreateNewEventDto dto, Long userId) {
         userClient.getById(userId);
@@ -378,13 +380,23 @@ public class EventService {
     }
 
     private Long getConfirmedCount(Long eventId) {
-        return 0L;
+        try {
+            Map<Long, Long> map = requestClient.getConfirmedCounts(List.of(eventId));
+            return map.getOrDefault(eventId, 0L);
+        } catch (Exception e) {
+            log.warn("Не удалось получить confirmedRequests для события {}: {}", eventId, e.getMessage());
+            return 0L;
+        }
     }
 
     private Map<Long, Long> getConfirmedMap(List<Long> eventIds) {
         if (eventIds.isEmpty()) return Map.of();
-        return eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0L));
-
+        try {
+            return requestClient.getConfirmedCounts(eventIds);
+        } catch (Exception e) {
+            log.warn("Не удалось получить confirmedRequests для событий: {}", eventIds);
+            return eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0L));
+        }
     }
 
     private Integer getViews(Long eventId) {
@@ -417,13 +429,14 @@ public class EventService {
                 return 0;
             }
 
-            Object hitsObject = stats.get(0).get("hit");
+            Object hitsObject = stats.get(0).get("hits"); // ← ИСПРАВЛЕНО: "hits"
             if (hitsObject instanceof Number) {
                 return ((Number) hitsObject).intValue();
             }
 
             return 0;
         } catch (Exception e) {
+            log.warn("Не удалось получить views для события {}: {}", eventId, e.getMessage());
             return 0;
         }
     }
@@ -464,7 +477,7 @@ public class EventService {
                 if (uri != null && uri.startsWith("/events/")) {
                     try {
                         Long eventId = Long.parseLong(uri.substring(uri.lastIndexOf('/') + 1));
-                        Object hitsObject = stat.get("hit");
+                        Object hitsObject = stat.get("hits"); // ← ИСПРАВЛЕНО: "hits"
                         if (hitsObject instanceof Number) {
                             viewsMap.put(eventId, ((Number) hitsObject).intValue());
                         }
@@ -478,6 +491,7 @@ public class EventService {
             return viewsMap;
 
         } catch (Exception e) {
+            log.warn("Не удалось получить views для событий {}: {}", eventIds, e.getMessage());
             return eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0));
         }
     }
