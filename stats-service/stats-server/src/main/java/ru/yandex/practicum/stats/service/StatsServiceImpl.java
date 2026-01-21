@@ -3,7 +3,6 @@ package ru.yandex.practicum.stats.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.dto.HitDto;
 import ru.yandex.practicum.dto.StatsDto;
 import ru.yandex.practicum.exception.model.BadRequestException;
 import ru.yandex.practicum.stats.mapper.HitMapper;
@@ -15,6 +14,7 @@ import ru.yandex.practicum.stats.repository.HitRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -25,31 +25,30 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<StatsDto> getStats(LocalDateTime startRange, LocalDateTime endRange, List<String> uris, boolean unique) {
-
         if (startRange == null || endRange == null || startRange.isAfter(endRange) || startRange.equals(endRange)) {
             throw new BadRequestException("Неверный диапазон дат для выгрузки статистики");
         }
-        List<StatsDto> stats;
+
+        List<Object[]> rawData;
         if (uris == null || uris.isEmpty()) {
-            if (!unique) {
-                stats = hitRepository.findAllHits(startRange, endRange);
-            } else {
-                stats = hitRepository.findAllUniqueHits(startRange, endRange);
-                stats.forEach(k -> k.setHits(1L));
-            }
+            rawData = unique
+                    ? hitRepository.findAllUniqueHitsRaw(startRange, endRange)
+                    : hitRepository.findAllHitsRaw(startRange, endRange);
         } else {
-            if (!unique) {
-                stats = hitRepository.findHitsByUris(startRange, endRange, uris);
-            } else {
-                stats = hitRepository.findUniqueHitsByUris(startRange, endRange, uris);
-            }
+            rawData = unique
+                    ? hitRepository.findUniqueHitsByUrisRaw(startRange, endRange, uris)
+                    : hitRepository.findHitsByUrisRaw(startRange, endRange, uris);
         }
 
-        return stats;
+        return rawData.stream()
+                .map(row -> unique
+                        ? new StatsDto((String) row[0], (String) row[1])
+                        : new StatsDto((String) row[0], (String) row[1], ((Number) row[2]).longValue()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void hit(HitDto hitDto) {
+    public void hit(ru.yandex.practicum.dto.HitDto hitDto) {
         Hit hit = HitMapper.toHit(hitDto);
         hit.setTimestamp(LocalDateTime.now());
         Optional<App> existedApp = appRepository.findByName(hitDto.getApp());

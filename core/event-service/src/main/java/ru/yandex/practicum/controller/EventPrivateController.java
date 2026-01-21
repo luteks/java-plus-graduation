@@ -15,13 +15,14 @@ import ru.yandex.practicum.dto.event.EventDto;
 import ru.yandex.practicum.dto.event.EventShortDto;
 import ru.yandex.practicum.dto.event.UpdateEventUserRequest;
 import ru.yandex.practicum.service.EventService;
+import ru.yandex.practicum.service.StatsHitAsyncService;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/users")
 public class EventPrivateController {
-
     private final EventService eventService;
     private final StatsClient statClient;
 

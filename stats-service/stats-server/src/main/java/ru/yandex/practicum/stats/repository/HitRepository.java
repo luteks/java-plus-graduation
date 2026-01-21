@@ -3,37 +3,41 @@ package ru.yandex.practicum.stats.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.dto.StatsDto;
-import ru.yandex.practicum.stats.model.Hit;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface HitRepository extends JpaRepository<Hit, Integer> {
+public interface HitRepository extends JpaRepository<ru.yandex.practicum.stats.model.Hit, Long> {
 
-    @Query("SELECT new ru.yandex.practicum.dto.StatsDto(a.name, h.uri, COUNT (h.id)) " +
-            "FROM Hit h JOIN App a ON a.id=h.app.id " +
-            "WHERE h.timestamp BETWEEN :startDateTime AND :endDateTime " +
-            "GROUP BY  h.uri, a.name " +
-            "ORDER BY COUNT(h.id) DESC")
-    List<StatsDto> findAllHits(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    @Query(nativeQuery = true,
+            value = "SELECT a.name AS app, h.uri AS uri, COUNT(h.id) AS hits " +
+                    "FROM hit h " +
+                    "JOIN app a ON a.id = h.app_id " +
+                    "WHERE h.date_time BETWEEN ?1 AND ?2 " +
+                    "GROUP BY h.uri, a.name " +
+                    "ORDER BY COUNT(h.id) DESC")
+    List<Object[]> findAllHitsRaw(LocalDateTime startDateTime, LocalDateTime endDateTime);
 
-    @Query("SELECT new ru.yandex.practicum.dto.StatsDto(name, uri)" +
-            "FROM (select distinct h.ip as ip, a.name as name, h.uri as uri from Hit h JOIN App a ON a.id=h.app.id " +
-            "WHERE h.timestamp BETWEEN :startDateTime AND :endDateTime)")
-    List<StatsDto> findAllUniqueHits(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    @Query(nativeQuery = true,
+            value = "SELECT DISTINCT a.name AS app, h.uri AS uri " +
+                    "FROM hit h " +
+                    "JOIN app a ON a.id = h.app_id " +
+                    "WHERE h.date_time BETWEEN ?1 AND ?2")
+    List<Object[]> findAllUniqueHitsRaw(LocalDateTime startDateTime, LocalDateTime endDateTime);
 
-    @Query("SELECT new ru.yandex.practicum.dto.StatsDto(a.name, h.uri, count (h.id))" +
-            "FROM  Hit h JOIN App a ON a.id=h.app.id " +
-            "WHERE (h.timestamp BETWEEN :startDateTime AND :endDateTime) AND (h.uri IN (:uris))" +
-            "GROUP BY h.uri, a.name " +
-            "ORDER BY COUNT(h.id) DESC")
-    List<StatsDto> findHitsByUris(LocalDateTime startDateTime, LocalDateTime endDateTime, List<String> uris);
+    @Query(nativeQuery = true,
+            value = "SELECT a.name AS app, h.uri AS uri, COUNT(h.id) AS hits " +
+                    "FROM hit h " +
+                    "JOIN app a ON a.id = h.app_id " +
+                    "WHERE h.date_time BETWEEN ?1 AND ?2 AND h.uri IN (?3) " +
+                    "GROUP BY h.uri, a.name " +
+                    "ORDER BY COUNT(h.id) DESC")
+    List<Object[]> findHitsByUrisRaw(LocalDateTime startDateTime, LocalDateTime endDateTime, List<String> uris);
 
-
-    @Query("SELECT new ru.yandex.practicum.dto.StatsDto(name, uri)" +
-            "FROM (select distinct h.ip as ip, a.name as name, h.uri as uri from Hit h JOIN App a ON a.id=h.app.id " +
-            "WHERE h.timestamp BETWEEN :startDateTime AND :endDateTime  AND (h.uri IN (:uris)))")
-    List<StatsDto> findUniqueHitsByUris(LocalDateTime startDateTime, LocalDateTime endDateTime, List<String> uris);
+    @Query(nativeQuery = true,
+            value = "SELECT DISTINCT a.name AS app, h.uri AS uri " +
+                    "FROM hit h " +
+                    "JOIN app a ON a.id = h.app_id " +
+                    "WHERE h.date_time BETWEEN ?1 AND ?2 AND h.uri IN (?3)")
+    List<Object[]> findUniqueHitsByUrisRaw(LocalDateTime startDateTime, LocalDateTime endDateTime, List<String> uris);
 }

@@ -51,6 +51,7 @@ public class EventService {
     private final StatsClient statsClient;
     private final RequestClient requestClient;
     private final EventMapper eventMapper;
+    private final StatsHitAsyncService statsHitAsyncService;
 
     public EventDto create(CreateNewEventDto dto, Long userId) {
         userClient.getById(userId);
@@ -324,7 +325,7 @@ public class EventService {
             throw new NotFoundException("Событие не опубликовано");
         }
 
-        statsClient.create(new HitDto(
+        statsHitAsyncService.sendHitAsync(new HitDto(
                 request.getRemoteAddr(),
                 "ewm-main-service",
                 request.getRequestURI(),
@@ -338,6 +339,7 @@ public class EventService {
         if ("127.0.0.1".equals(request.getRemoteAddr()) || "0:0:0:0:0:0:0:1".equals(request.getRemoteAddr())) {
             views = views + 1;
         }
+
         return eventMapper.toEventDto(
                 event,
                 EventCategoryMapper.toCategoryDtoFromCategory(event.getCategory()),
