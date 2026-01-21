@@ -161,36 +161,22 @@ public class CompilationService {
         List<Long> ownerIds = eventList.stream().map(Event::getOwnerId).distinct().toList();
 
         // confirmedRequests
-        Map<Long, Long> confirmedMap;
-        try {
-            confirmedMap = requestClient.getConfirmedCounts(eventIds);
-        } catch (Exception e) {
-            log.warn("Не удалось получить confirmedRequests для событий {}: {}", eventIds, e.getMessage());
-            confirmedMap = eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0L));
-        }
+        Map<Long, Long> confirmedMap = requestClient.getConfirmedCounts(eventIds);
 
         // initiator
-        Map<Long, UserShortDto> initiatorMap;
-        try {
-            List<UserShortDto> users = userClient.getByIds(ownerIds);
-            initiatorMap = users.stream().collect(Collectors.toMap(UserShortDto::getId, u -> u));
-        } catch (Exception e) {
-            log.warn("Не удалось получить пользователей {}: {}", ownerIds, e.getMessage());
-            initiatorMap = ownerIds.stream()
-                    .collect(Collectors.toMap(id -> id, id -> new UserShortDto(id, "Unknown User")));
-        }
+        List<UserShortDto> users = userClient.getByIds(ownerIds);
+        Map<Long, UserShortDto> initiatorMap = users.stream()
+                .collect(Collectors.toMap(UserShortDto::getId, u -> u));
 
         // views
         Map<Long, Integer> viewsMap = getEventsViewsMap(eventIds);
 
-        Map<Long, UserShortDto> finalInitiatorMap = initiatorMap;
-        Map<Long, Long> finalConfirmedMap = confirmedMap;
         return eventList.stream()
                 .map(event -> eventMapper.toEventShortDto(
                         event,
                         EventCategoryMapper.toCategoryDtoFromCategory(event.getCategory()),
-                        finalInitiatorMap.getOrDefault(event.getOwnerId(), new UserShortDto(event.getOwnerId(), "Unknown User")),
-                        finalConfirmedMap.getOrDefault(event.getId(), 0L),
+                        initiatorMap.getOrDefault(event.getOwnerId(), new UserShortDto(event.getOwnerId(), "Unknown User")),
+                        confirmedMap.getOrDefault(event.getId(), 0L),
                         viewsMap.getOrDefault(event.getId(), 0)
                 ))
                 .collect(Collectors.toSet());
