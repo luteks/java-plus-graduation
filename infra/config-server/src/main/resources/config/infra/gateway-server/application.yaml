@@ -13,17 +13,17 @@ spring:
         - id: event-service
           uri: lb://EVENT-SERVICE
           predicates:
-            - Path=/events/**,/categories/**,/compilations/**,/admin/events/**,/admin/categories/**,/admin/compilations/**,/users/{userId}/events/**,/internal/events/**
+            - Path=/events/**,/categories/**,/compilations/**,/admin/events/**,/admin/categories/**,/admin/compilations/**,/users/{userId}/events/**
 
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/admin/users/**,/internal/users/**
+            - Path=/admin/users/**
 
         - id: request-service
           uri: lb://REQUEST-SERVICE
           predicates:
-            - Path=/users/{userId}/requests/**,/users/{userId}/events/{eventId}/requests/**,/internal/requests/**
+            - Path=/users/{userId}/requests/**,/users/{userId}/events/{eventId}/requests/**
         - id: comment-service
           uri: lb://COMMENT-SERVICE
           predicates:
