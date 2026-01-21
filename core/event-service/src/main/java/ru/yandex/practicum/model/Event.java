@@ -33,8 +33,7 @@ public class Event {
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
+    @Column(name = "location_id")
     private Location location;
 
     @Column(name = "initiator_id", nullable = false)
