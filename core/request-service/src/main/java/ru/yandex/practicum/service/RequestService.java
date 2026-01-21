@@ -169,6 +169,9 @@ public class RequestService {
             throw new ConflictException("Ошибка при сохранении заявок в базу данных");
         }
 
+        Long newConfirmedCount = requestRepository.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED);
+        eventClient.updateConfirmedRequests(eventId, newConfirmedCount);
+
         log.info("END updateRequest. Returning response: {}", response);
         return response;
     }

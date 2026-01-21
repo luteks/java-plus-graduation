@@ -1,60 +1,67 @@
 package ru.yandex.practicum.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import ru.yandex.practicum.enums.EventState;
 import java.time.Instant;
 
 @Entity
-@Table(name = "events")
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@Table(name = "events")
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(min = 1, max = 120)
-    private String title;
-    @Size(min = 20, max = 2000)
-    private String annotation;
-    @Size(min = 20, max = 7000)
-    private String description;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
-    @JoinColumn(name = "category_id")
-    private EventCategory category;
-    private Instant createdOn;
-    private Instant eventDateTime;
-
-    @Column(name = "owner_id")
-    private Long ownerId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    private Location location;
 
     @Column(nullable = false)
-    @Builder.Default
-    Boolean paid = false;
+    private String title;
+
+    @Column(nullable = false)
+    private String annotation;
+
+    @Column(nullable = false)
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private EventCategory category;
+
+    @Column(name = "owner_id", nullable = false)
+    private Long ownerId;
+
+    @Column(name = "location_id")
+    private Location location;
 
     @Column(name = "initiator_id", nullable = false)
-    Long initiatorId;
+    private Long initiatorId;
 
-    @Column(name = "participant_limit", nullable = false)
-    Integer participantLimit;
+    @Column(name = "created_on", nullable = false)
+    private Instant createdOn;
+
+    @Column(name = "event_date_time", nullable = false)
+    private Instant eventDateTime;
 
     @Column(name = "published_on")
     private Instant publishedOn;
 
+    @Column(nullable = false)
+    private Boolean paid = false;
+
+    @Column(name = "participant_limit", nullable = false)
+    private Integer participantLimit = 0;
+
     @Column(name = "is_moderated")
-    @Builder.Default
     private Boolean isModerated = true;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EventState state;
+
+    // НОВОЕ ПОЛЕ
+    @Column(name = "confirmed_requests", nullable = false)
+    private Long confirmedRequests = 0L;
 }

@@ -155,11 +155,7 @@ public class CompilationService {
         }
 
         List<Event> eventList = new ArrayList<>(events);
-        List<Long> eventIds = eventList.stream().map(Event::getId).toList();
         List<Long> ownerIds = eventList.stream().map(Event::getOwnerId).distinct().toList();
-
-        // confirmedRequests
-        Map<Long, Long> confirmedMap = Map.of();
 
         // initiator
         List<UserShortDto> users = userClient.getByIds(ownerIds);
@@ -167,6 +163,7 @@ public class CompilationService {
                 .collect(Collectors.toMap(UserShortDto::getId, u -> u));
 
         // views
+        List<Long> eventIds = eventList.stream().map(Event::getId).toList();
         Map<Long, Integer> viewsMap = getEventsViewsMap(eventIds);
 
         return eventList.stream()
@@ -174,7 +171,7 @@ public class CompilationService {
                         event,
                         EventCategoryMapper.toCategoryDtoFromCategory(event.getCategory()),
                         initiatorMap.getOrDefault(event.getOwnerId(), new UserShortDto(event.getOwnerId(), "Unknown User")),
-                        confirmedMap.getOrDefault(event.getId(), 0L),
+                        event.getConfirmedRequests(), // ← ЧИТАЕМ ИЗ МОДЕЛИ!
                         viewsMap.getOrDefault(event.getId(), 0)
                 ))
                 .collect(Collectors.toSet());

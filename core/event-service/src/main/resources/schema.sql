@@ -45,3 +45,5 @@ CREATE TABLE IF NOT EXISTS event_compilations (
     event_id       BIGINT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
     PRIMARY KEY (compilation_id, event_id)
 );
+
+ALTER TABLE events ADD COLUMN confirmed_requests BIGINT NOT NULL DEFAULT 0;
