@@ -15,6 +15,7 @@ import ru.yandex.practicum.dto.*;
 import ru.yandex.practicum.event.dto.*;
 import ru.yandex.practicum.event.mapper.EventMapper;
 import ru.yandex.practicum.event.model.*;
+import ru.yandex.practicum.ewm.stats.messages.RecommendedEventProto;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.event.repository.LocationRepository;
 import ru.yandex.practicum.exception.ConditionNotMetException;

@@ -26,7 +26,6 @@ import static ru.yandex.practicum.dto.Constants.FORMAT_DATETIME;
 @RequiredArgsConstructor
 public class PublicEventController {
 
-    @Value("${main.service.app.name}")
     private final EventService eventService;
     private final CollectorClient collectorClient;
 
