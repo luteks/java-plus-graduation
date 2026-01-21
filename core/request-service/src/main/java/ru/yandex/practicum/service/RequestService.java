@@ -91,12 +91,13 @@ public class RequestService {
             throw new NotFoundException("Не удалось найти пользователя или событие");
         }
 
-        if (user == null || event == null) {
-            log.error("User or event not found after Feign call. User: {}, Event: {}", user, event);
-            throw new NotFoundException("Не удалось найти пользователя или событие");
+        if (user == null) {
+            throw new NotFoundException("Пользователь не найден");
+        }
+        if (event == null) {
+            throw new NotFoundException("Событие не найдено");
         }
 
-        // 🔥 Ключевая защита: событие должно иметь владельца
         if (event.getOwnerId() == null) {
             log.error("Event with id {} has no owner", eventId);
             throw new NotFoundException("Событие не имеет владельца");
