@@ -19,8 +19,11 @@ import ru.yandex.practicum.feign.user.UserClient;
 import ru.yandex.practicum.mapper.RequestMapper;
 import ru.yandex.practicum.model.ParticipationRequest;
 import ru.yandex.practicum.repository.RequestRepository;
+
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static ru.yandex.practicum.enums.RequestStatus.CONFIRMED;
 import static ru.yandex.practicum.enums.RequestStatus.REJECTED;
 
@@ -56,9 +59,14 @@ public class RequestService {
             throw new NotFoundException("Событие не найдено или недоступно");
         }
 
+        if (event.getOwnerId() == null) {
+            throw new NotFoundException("Событие не имеет владельца");
+        }
+
         if (!Objects.equals(event.getOwnerId(), userId)) {
             throw new ForbiddenException("User с id " + userId + " не владелец события " + eventId);
         }
+
         List<ParticipationRequest> requests = requestRepository.findByEventId(eventId);
         return requests.stream()
                 .map(RequestMapper::fromRequestToRequestDto)
@@ -88,9 +96,10 @@ public class RequestService {
             throw new NotFoundException("Не удалось найти пользователя или событие");
         }
 
-        if (event == null) {
-            log.error("Event with id {} not found", eventId);
-            throw new NotFoundException("Событие с id " + eventId + " не найдено");
+        // 🔥 Ключевая защита: событие должно иметь владельца
+        if (event.getOwnerId() == null) {
+            log.error("Event with id {} has no owner", eventId);
+            throw new NotFoundException("Событие не имеет владельца");
         }
 
         if (!Objects.equals(user.getId(), event.getOwnerId())) {
@@ -166,7 +175,7 @@ public class RequestService {
                 }
             }
         } catch (Exception e) {
-            log.error("Error during status update logic: {}", e.getMessage());
+            log.error("Error during status update logic: {}", e.getMessage(), e);
             throw new ConflictException("Ошибка при обновлении статусов заявок");
         }
 
@@ -174,7 +183,7 @@ public class RequestService {
             log.info("Saving {} requests to database", requests.size());
             requestRepository.saveAll(requests);
         } catch (Exception e) {
-            log.error("Database error while saving requests: {}", e.getMessage());
+            log.error("Database error while saving requests: {}", e.getMessage(), e);
             throw new ConflictException("Ошибка при сохранении заявок в базу данных");
         }
 
@@ -270,7 +279,7 @@ public class RequestService {
         try {
             return requestClientSingle.getCountByStatus(eventId, status);
         } catch (Exception e) {
-            log.error("Ошибка при получении количества заявок для события {}: {}", eventId, e.getMessage());
+            log.error("Ошибка при получении количества заявок для события {}: {}", eventId, e.getMessage(), e);
             return 0L;
         }
     }
