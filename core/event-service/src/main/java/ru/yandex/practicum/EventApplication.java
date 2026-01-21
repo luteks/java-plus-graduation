@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients
+@EnableFeignClients(basePackages = "ru.yandex.practicum.interaction.client")
 @EnableAsync
 public class EventApplication {
     public static void main(String[] args) {
