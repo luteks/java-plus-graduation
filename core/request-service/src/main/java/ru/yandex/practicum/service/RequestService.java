@@ -88,6 +88,11 @@ public class RequestService {
             throw new NotFoundException("Не удалось найти пользователя или событие");
         }
 
+        if (event == null) {
+            log.error("Event with id {} not found", eventId);
+            throw new NotFoundException("Событие с id " + eventId + " не найдено");
+        }
+
         if (!Objects.equals(user.getId(), event.getOwnerId())) {
             log.warn("Access denied: User {} is not owner of event {}", userId, eventId);
             throw new ForbiddenException("User с id " + userId + " не владелец события " + eventId);
@@ -199,8 +204,14 @@ public class RequestService {
             throw new NotFoundException("Не удалось найти пользователя или событие");
         }
 
+        if (user == null) {
+            throw new NotFoundException("Пользователь не найден");
+        }
         if (event == null) {
-            throw new NotFoundException("Событие не найдено или недоступно");
+            throw new NotFoundException("Событие не найдено");
+        }
+        if (event.getOwnerId() == null) {
+            throw new NotFoundException("Событие не имеет владельца");
         }
 
         if (Objects.equals(user.getId(), event.getOwnerId())) {
