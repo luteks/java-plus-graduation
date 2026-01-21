@@ -1,7 +1,6 @@
 package ru.yandex.practicum.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;

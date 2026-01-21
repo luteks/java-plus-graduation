@@ -1,22 +1,17 @@
 package ru.yandex.practicum.request.service;
 
-
-
-
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.dto.*;
 import ru.yandex.practicum.dto.*;
 import ru.yandex.practicum.request.dto.EventRequestStatusUpdateRequest;
 import ru.yandex.practicum.request.dto.EventRequestStatusUpdateResult;
-import ru.practicum.request.exception.*;
 import ru.yandex.practicum.request.exception.*;
 import ru.yandex.practicum.request.feign.event.EventFeign;
 import ru.yandex.practicum.request.feign.user.UserFeign;
-import ru.yandex.practicum.request.model.Request;
 import ru.yandex.practicum.request.mapper.RequestMapper;
+import ru.yandex.practicum.request.model.Request;
 import ru.yandex.practicum.request.repository.RequestRepository;
 
 import java.time.LocalDateTime;

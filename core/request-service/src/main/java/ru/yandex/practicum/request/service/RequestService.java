@@ -1,7 +1,5 @@
 package ru.yandex.practicum.request.service;
 
-
-
 import ru.yandex.practicum.dto.ParticipationRequestDto;
 import ru.yandex.practicum.dto.RequestStatus;
 import ru.yandex.practicum.request.dto.EventRequestStatusUpdateRequest;

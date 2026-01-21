@@ -2,9 +2,7 @@ package ru.yandex.practicum.comment.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.HttpStatus;
-
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.comment.dto.CommentDto;
 import ru.yandex.practicum.comment.dto.UpdateCommentDto;

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.client;
 
 
-
 import ru.yandex.practicum.ParamDto;
 import ru.yandex.practicum.ParamHitDto;
 import ru.yandex.practicum.ViewStats;

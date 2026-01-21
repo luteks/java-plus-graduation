@@ -1,8 +1,6 @@
 package ru.yandex.practicum.compilation.service;
 
 
-
-
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,14 +10,14 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.compilation.dto.CompilationDto;
 import ru.yandex.practicum.compilation.dto.NewCompilationDto;
 import ru.yandex.practicum.compilation.dto.UpdateCompilationRequest;
-import ru.yandex.practicum.compilation.model.Compilation;
 import ru.yandex.practicum.compilation.mapper.CompilationMapper;
+import ru.yandex.practicum.compilation.model.Compilation;
 import ru.yandex.practicum.compilation.repository.CompilationRepository;
 import ru.yandex.practicum.dto.CategoryDto;
 import ru.yandex.practicum.dto.EventShortDto;
 import ru.yandex.practicum.dto.UserShortDto;
-import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.event.mapper.EventMapper;
+import ru.yandex.practicum.event.model.Event;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.exception.EntityNotFoundException;
 import ru.yandex.practicum.feign.CategoryFeign;

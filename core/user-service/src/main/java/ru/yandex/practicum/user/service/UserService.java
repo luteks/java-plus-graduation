@@ -1,7 +1,6 @@
 package ru.yandex.practicum.user.service;
 
 
-
 import ru.yandex.practicum.dto.UserDto;
 import ru.yandex.practicum.dto.UserShortDto;
 

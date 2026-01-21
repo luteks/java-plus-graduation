@@ -1,7 +1,6 @@
 package ru.yandex.practicum.compilation.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import ru.yandex.practicum.dto.EventShortDto;

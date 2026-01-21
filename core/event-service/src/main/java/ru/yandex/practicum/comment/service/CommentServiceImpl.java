@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.comment.dto.CommentDto;
 import ru.yandex.practicum.comment.dto.InputCommentDto;
 import ru.yandex.practicum.comment.dto.UpdateCommentDto;
-import ru.yandex.practicum.comment.model.Comment;
 import ru.yandex.practicum.comment.mapper.CommentMapper;
+import ru.yandex.practicum.comment.model.Comment;
 import ru.yandex.practicum.comment.repository.CommentRepository;
 import ru.yandex.practicum.dto.EventState;
 import ru.yandex.practicum.dto.UserShortDto;
@@ -22,7 +22,6 @@ import ru.yandex.practicum.exception.InitiatorRequestException;
 import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.feign.RequestFeign;
 import ru.yandex.practicum.feign.UserFeign;
-
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

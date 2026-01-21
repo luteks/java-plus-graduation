@@ -3,7 +3,6 @@ package ru.yandex.practicum.event.service;
 
 import ru.yandex.practicum.dto.EventFullDto;
 import ru.yandex.practicum.dto.EventShortDto;
-import ru.practicum.event.dto.*;
 import ru.yandex.practicum.event.dto.*;
 
 import java.util.List;

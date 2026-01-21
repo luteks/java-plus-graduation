@@ -1,7 +1,6 @@
 package ru.yandex.practicum.compilation.dto;
 
 
-
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
