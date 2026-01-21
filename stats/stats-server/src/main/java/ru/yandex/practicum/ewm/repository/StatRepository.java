@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface StatRepository extends JpaRepository<EndpointHit, Integer> {
     @Query("""
-                SELECT new ru.practicum.ViewStats(e.app, e.uri, COUNT(e.id))
+                SELECT new ru.yandex.practicum.ViewStats(e.app, e.uri, COUNT(e.id))
                 FROM EndpointHit e
                 WHERE e.timestamp BETWEEN ?1 AND ?2 AND (?3 IS NULL OR e.uri IN ?3)
                 GROUP BY e.app, e.uri
@@ -24,7 +24,7 @@ public interface StatRepository extends JpaRepository<EndpointHit, Integer> {
                                                       List<String> uris);
 
     @Query("""
-            SELECT new ru.practicum.ViewStats(e.app, e.uri, COUNT(DISTINCT e.ip))
+            SELECT new ru.yandex.practicum.ViewStats(e.app, e.uri, COUNT(DISTINCT e.ip))
             FROM EndpointHit e
             WHERE e.timestamp BETWEEN ?1 AND ?2 AND (?3 IS NULL OR e.uri IN ?3)
             GROUP BY e.app, e.uri
