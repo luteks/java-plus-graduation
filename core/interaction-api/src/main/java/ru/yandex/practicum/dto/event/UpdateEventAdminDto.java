@@ -26,7 +26,7 @@ public class UpdateEventAdminDto {
     private LocationDto location;
     private Boolean paid;
     @PositiveOrZero
-    private Long participantLimit;
+    private Integer participantLimit;
     private Boolean requestModeration;
     private AdminEventAction stateAction;
     @Size(min = 3, max = 120)

@@ -30,7 +30,7 @@ public interface EventMapper {
     @Mapping(target = "publishedOn", ignore = true)
     @Mapping(target = "state", constant = "PENDING")
     @Mapping(target = "paid", expression = "java(dto.getPaid() != null ? dto.getPaid() : false)")
-    @Mapping(target = "participantLimit", expression = "java(dto.getParticipantLimit() != null ? dto.getParticipantLimit() : 0L)")
+    @Mapping(target = "participantLimit", expression = "java(dto.getParticipantLimit() != null ? dto.getParticipantLimit() : 0)")
     @Mapping(target = "isModerated", expression = "java(dto.getRequestModeration() != null ? dto.getRequestModeration() : true)")
     @Mapping(target = "eventDateTime", source = "dto.eventDate")
     @Mapping(target = "location", source = "dto.location")
