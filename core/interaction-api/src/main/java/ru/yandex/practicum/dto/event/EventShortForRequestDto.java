@@ -13,5 +13,5 @@ public class EventShortForRequestDto {
     private Long ownerId;
     private Instant publishedOn;
     private Boolean isModerated;
-    private Integer participantLimit;
+    private Long participantLimit;
 }

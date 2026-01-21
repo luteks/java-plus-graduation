@@ -24,7 +24,7 @@ public class UpdateEventUserRequest {
     private LocationDto location;
     private Boolean paid;
     @PositiveOrZero
-    private Integer participantLimit;
+    private Long participantLimit;
     private Boolean requestModeration;
     private UserEventActions stateAction;
     @Size(min = 3, max = 120)

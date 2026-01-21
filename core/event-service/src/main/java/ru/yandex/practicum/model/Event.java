@@ -53,7 +53,7 @@ public class Event {
     private Boolean paid = false;
 
     @Column(name = "participant_limit", nullable = false)
-    private Integer participantLimit = 0;
+    private Long participantLimit = 0L;
 
     @Column(name = "is_moderated")
     private Boolean isModerated = true;

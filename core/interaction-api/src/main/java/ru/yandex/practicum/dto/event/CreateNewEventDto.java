@@ -31,7 +31,7 @@ public class CreateNewEventDto {
     private LocationDto location;
     private Boolean paid;
     @PositiveOrZero
-    private Integer participantLimit;
+    private Long participantLimit;
     private Boolean requestModeration;
     @NotBlank
     @Size(min = 3, max = 120)
