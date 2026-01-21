@@ -11,7 +11,6 @@ import ru.yandex.practicum.dto.event.EventShortDto;
 import ru.yandex.practicum.dto.user.UserShortDto;
 import ru.yandex.practicum.exception.BadRequestException;
 import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.feign.request.RequestClient;
 import ru.yandex.practicum.feign.user.UserClient;
 import ru.yandex.practicum.mapper.CompilationMapper;
 import ru.yandex.practicum.mapper.EventCategoryMapper;
@@ -34,7 +33,6 @@ public class CompilationService {
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
     private final UserClient userClient;
-    private final RequestClient requestClient;
     private final StatsClient statClient;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -159,11 +157,8 @@ public class CompilationService {
 
         // confirmedRequests
         Map<Long, Long> confirmedMap;
-        try {
-            confirmedMap = requestClient.getConfirmedCounts(eventIds);
-        } catch (Exception e) {
-            confirmedMap = eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0L));
-        }
+        confirmedMap = eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0L));
+
 
         // initiator
         Map<Long, UserShortDto> initiatorMap;
