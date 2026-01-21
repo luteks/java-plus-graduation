@@ -1,33 +1,51 @@
 services:
   stats-db:
     image: postgres:16.1
-    container_name: stats-db
+    container_name: postgres-ewm-stats-db
     ports:
-      - "5433:5432"
+      - "6542:5432"
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: ewm-stats
+      - POSTGRES_USER=stat
+      - POSTGRES_PASSWORD=stat
+      - POSTGRES_DB=ewm-stats
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
       interval: 5s
       retries: 10
-    volumes:
-      - ./stats/stats-server/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+
   ewm-db:
     image: postgres:16.1
-    container_name: ewm-db
+    container_name: postgres-ewm-main-db
     ports:
-      - "5432:5432"
+      - "6543:5432"
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: ewm-main
+      - POSTGRES_USER=main
+      - POSTGRES_PASSWORD=main
+      - POSTGRES_DB=ewm-main
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
       interval: 5s
       retries: 10
-    volumes:
-      - ./core/main-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+
+  db-init:
+    image: postgres:16.1
+    container_name: init-main-db
+    depends_on:
+      ewm-db:
+        condition: service_healthy
+    entrypoint: |
+      bash -c '
+      set -e
+      until psql postgresql://main:main@ewm-db:5432/ewm-main -c "\q"; do
+        echo "PostgreSQL is unavailable - sleeping"
+        sleep 1
+      done
+      
+      psql postgresql://main:main@ewm-db:5432/ewm-main -v ON_ERROR_STOP=1 <<EOSQL
+      CREATE DATABASE ewm_category;
+      CREATE DATABASE ewm_user;
+      CREATE DATABASE ewm_request;
+      EOSQL
+      '
