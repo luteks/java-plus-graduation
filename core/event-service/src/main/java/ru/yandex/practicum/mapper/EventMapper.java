@@ -45,7 +45,6 @@ public interface EventMapper {
     @Mapping(target = "initiator", source = "owner")
     @Mapping(target = "paid", source = "event.paid")
     @Mapping(target = "participantLimit", source = "event.participantLimit")
-    @Mapping(target = "confirmedRequests", source = "confirmedRequests")
     @Mapping(target = "views", source = "views")
     @Mapping(target = "createdOn", source = "event.createdOn")
     @Mapping(target = "publishedOn", source = "event.publishedOn")
@@ -68,7 +67,6 @@ public interface EventMapper {
     @Mapping(target = "eventDate", source = "event.eventDateTime")
     @Mapping(target = "initiator", source = "owner")
     @Mapping(target = "paid", source = "event.paid")
-    @Mapping(target = "confirmedRequests", source = "confirmedRequests")
     @Mapping(target = "views", source = "views")
     void updateEventShortDto(
             Event event,
