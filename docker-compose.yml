@@ -1,92 +1,51 @@
-version: '3.9'
-
 services:
   stats-db:
     image: postgres:16.1
-    container_name: stats-db
+    container_name: postgres-ewm-stats-db
     ports:
-      - "5433:5432"
-    restart: unless-stopped
+      - "6542:5432"
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "password"
-      POSTGRES_DB: "ewm-stats"
+      - POSTGRES_USER=stat
+      - POSTGRES_PASSWORD=stat
+      - POSTGRES_DB=ewm-stats
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 5s
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
+      interval: 5s
       retries: 10
-    volumes:
-      - ./stats/stats-server/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
 
-  comments-db:
+  ewm-db:
     image: postgres:16.1
-    container_name: comments-db
+    container_name: postgres-ewm-main-db
     ports:
-      - "5434:5432"
-    restart: unless-stopped
+      - "6543:5432"
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "password"
-      POSTGRES_DB: "ewm-comments"
+      - POSTGRES_USER=main
+      - POSTGRES_PASSWORD=main
+      - POSTGRES_DB=ewm-main
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 5s
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
+      interval: 5s
       retries: 10
-    volumes:
-      - ./core/comment-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
 
-  events-db:
+  db-init:
     image: postgres:16.1
-    container_name: events-db
-    ports:
-      - "5435:5432"
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "password"
-      POSTGRES_DB: "ewm-events"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    volumes:
-      - ./core/event-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-
-  requests-db:
-    image: postgres:16.1
-    container_name: requests-db
-    ports:
-      - "5436:5432"
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "password"
-      POSTGRES_DB: "ewm-requests"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    volumes:
-      - ./core/request-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-
-  users-db:
-    image: postgres:16.1
-    container_name: users-db
-    ports:
-      - "5437:5432"
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "password"
-      POSTGRES_DB: "ewm-users"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    volumes:
-      - ./core/user-service/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    container_name: init-main-db
+    depends_on:
+      ewm-db:
+        condition: service_healthy
+    entrypoint: |
+      bash -c '
+      set -e
+      until psql postgresql://main:main@ewm-db:5432/ewm-main -c "\q"; do
+        echo "PostgreSQL is unavailable - sleeping"
+        sleep 1
+      done
+      
+      psql postgresql://main:main@ewm-db:5432/ewm-main -v ON_ERROR_STOP=1 <<EOSQL
+      CREATE DATABASE ewm_category;
+      CREATE DATABASE ewm_user;
+      CREATE DATABASE ewm_request;
+      EOSQL
+      '
