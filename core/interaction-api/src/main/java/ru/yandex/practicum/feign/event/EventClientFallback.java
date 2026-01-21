@@ -16,4 +16,9 @@ public class EventClientFallback implements EventClient {
                 .participantLimit(0)
                 .build();
     }
+
+    @Override
+    public void updateConfirmedRequests(Long eventId, Long confirmedRequests) {
+
+    }
 }
