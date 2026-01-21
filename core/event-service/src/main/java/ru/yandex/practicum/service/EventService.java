@@ -378,24 +378,12 @@ public class EventService {
     }
 
     private Long getConfirmedCount(Long eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие не найдено"));
-        return event.getConfirmedRequests();
+            return 0L;
     }
 
     private Map<Long, Long> getConfirmedMap(List<Long> eventIds) {
         if (eventIds.isEmpty()) return Map.of();
-
-        List<Event> events = eventRepository.findAllById(eventIds);
-        return events.stream()
-                .collect(Collectors.toMap(Event::getId, Event::getConfirmedRequests));
-    }
-
-    public void updateConfirmedRequests(Long eventId, Long confirmedRequests) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие не найдено"));
-        event.setConfirmedRequests(confirmedRequests);
-        eventRepository.save(event);
+            return eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0L));
     }
 
     private Integer getViews(Long eventId) {
