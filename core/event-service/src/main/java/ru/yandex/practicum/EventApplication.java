@@ -6,9 +6,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "ru.yandex.practicum")
 @EnableDiscoveryClient
-@EnableFeignClients(basePackages = "ru.yandex.practicum.interaction.client")
+@EnableFeignClients
 @EnableAsync
 public class EventApplication {
     public static void main(String[] args) {
