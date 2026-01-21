@@ -20,7 +20,6 @@ import ru.yandex.practicum.enums.UserEventActions;
 import ru.yandex.practicum.exception.BadRequestException;
 import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.feign.request.RequestClient;
 import ru.yandex.practicum.feign.user.UserClient;
 import ru.yandex.practicum.mapper.EventCategoryMapper;
 import ru.yandex.practicum.mapper.EventMapper;
@@ -51,7 +50,6 @@ public class EventService {
     private final StatsClient statsClient;
     private final EventMapper eventMapper;
     private final StatsHitAsyncService statsHitAsyncService;
-    private final RequestClient requestClient;
 
     public EventDto create(CreateNewEventDto dto, Long userId) {
         userClient.getById(userId);
@@ -380,23 +378,12 @@ public class EventService {
     }
 
     private Long getConfirmedCount(Long eventId) {
-        try {
-            Map<Long, Long> map = requestClient.getConfirmedCounts(List.of(eventId));
-            return map.getOrDefault(eventId, 0L);
-        } catch (Exception e) {
-            log.warn("Не удалось получить confirmedRequests для события {}: {}", eventId, e.getMessage());
             return 0L;
-        }
     }
 
     private Map<Long, Long> getConfirmedMap(List<Long> eventIds) {
         if (eventIds.isEmpty()) return Map.of();
-        try {
-            return requestClient.getConfirmedCounts(eventIds);
-        } catch (Exception e) {
-            log.warn("Не удалось получить confirmedRequests для событий: {}", eventIds);
             return eventIds.stream().collect(Collectors.toMap(id -> id, id -> 0L));
-        }
     }
 
     private Integer getViews(Long eventId) {
