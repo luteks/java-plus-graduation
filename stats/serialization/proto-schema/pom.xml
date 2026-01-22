@@ -55,10 +55,6 @@
                             <version>${grpc.version}</version>
                         </binaryMavenPlugin>
                     </binaryMavenPlugins>
-
-                    <includeDirectories>
-                        <includeDirectory>src/main/protobuf</includeDirectory>
-                    </includeDirectories>
                 </configuration>
 
                 <executions>
