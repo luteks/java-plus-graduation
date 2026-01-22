@@ -21,40 +21,40 @@ import static ru.yandex.practicum.dto.Constants.FORMAT_DATETIME;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface EventMapper {
 
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "initiator", ignore = true)
     List<EventShortDto> toEventShortDto(List<Event> event);
 
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "initiator", ignore = true)
     EventFullDto toEventFullDto(Event event);
 
     @Mapping(target = "id", source = "event.id")
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "category", source = "categoryDto")
     @Mapping(target = "initiator", ignore = true)
     EventFullDto toEventFullDto(Event event, CategoryDto categoryDto);
 
     @Mapping(target = "id", source = "event.id")
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "initiator", source = "userShortDto")
     EventFullDto toEventFullDto(Event event, UserShortDto userShortDto);
 
     @Mapping(target = "id", source = "event.id")
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "initiator", source = "userShortDto")
     @Mapping(target = "category", source = "categoryDto")
     EventFullDto toEventFullDto(Event event, UserShortDto userShortDto, CategoryDto categoryDto);
 
-    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "initiator", ignore = true)

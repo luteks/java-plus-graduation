@@ -31,4 +31,8 @@ public interface EventService {
     Optional<EventFullDto> findOptEventByUserIdAndId(Long userId, Long eventId);
 
     EventFullDto findEventById(Long eventId);
+
+    void likeEvent(Long userId, Long eventId);
+
+    List<EventFullDto> getRecommendations(Long userId, Integer maxResults);
 }

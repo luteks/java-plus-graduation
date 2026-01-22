@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.client.CollectorClient;
 import ru.yandex.practicum.dto.ParticipationRequestDto;
 import ru.yandex.practicum.dto.RequestStatus;
 import ru.yandex.practicum.request.dto.EventRequestStatusUpdateRequest;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class PrivateRequestController {
 
     private final RequestService requestService;
+    private final CollectorClient collectorClient;
 
     @GetMapping("/users/{userId}/requests")
     public List<ParticipationRequestDto> getUserRequests(@PathVariable Long userId) {
@@ -32,7 +34,9 @@ public class PrivateRequestController {
     public ParticipationRequestDto createRequest(@PathVariable Long userId,
                                                  @RequestParam Long eventId) {
         log.info("Запрос на создание запроса пользователем: {}, в событии: {}", userId, eventId);
-        return requestService.createRequest(userId, eventId);
+        ParticipationRequestDto result = requestService.createRequest(userId, eventId);
+        collectorClient.sendRegistration(userId, eventId);
+        return result;
     }
 
     @PatchMapping("/users/{userId}/requests/{requestId}/cancel")

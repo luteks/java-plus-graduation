@@ -1,0 +1,11 @@
+package ru.yandex.practicum.ewm.kafka;
+
+import org.apache.kafka.clients.consumer.Consumer;
+import ru.yandex.practicum.ewm.stats.avro.EventSimilarityAvro;
+import ru.yandex.practicum.ewm.stats.avro.UserActionAvro;
+
+public interface KafkaClient extends AutoCloseable {
+    Consumer<Long, UserActionAvro> getKafkaUserActionConsumer();
+
+    Consumer<Long, EventSimilarityAvro> getKafkaEventSimilarityConsumer();
+}
