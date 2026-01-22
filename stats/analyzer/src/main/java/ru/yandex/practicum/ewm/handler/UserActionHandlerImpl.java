@@ -20,12 +20,14 @@ public class UserActionHandlerImpl implements UserActionHandler {
     public void handleUserAction(UserActionAvro avro) {
         UserAction action = actionMapper.mapToUserAction(avro);
 
-        if (!actionRepository.existsByEventIdAndUserId(action.getEventId(), action.getUserId())) {
+        UserAction oldAction = actionRepository
+                .findByEventIdAndUserId(action.getEventId(), action.getUserId())
+                .orElse(null);
+
+        if (oldAction == null) {
             action = actionRepository.save(action);
             log.info("Сохранить новое действие: {}", action);
         } else {
-            UserAction oldAction = actionRepository
-                    .findByEventIdAndUserId(action.getEventId(), action.getUserId()).get();
             log.info("Найти в БД старое действие: {}", oldAction);
             if (action.getWeight() > oldAction.getWeight()) {
                 oldAction.setWeight(action.getWeight());

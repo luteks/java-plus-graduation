@@ -23,9 +23,9 @@ public class AggregatorServiceImpl implements AggregatorService {
     @Value("${application.action-weight.like}")
     private Double like;
 
-    private Map<Long, Map<Long, Double>> eventUserWeight = new HashMap<>();
-    private Map<Long, Double> eventWeightSum = new HashMap<>();
-    private Map<Long, Map<Long, Double>> twoEventsMinSum = new HashMap<>();
+    private final Map<Long, Map<Long, Double>> eventUserWeight = new HashMap<>();
+    private final Map<Long, Double> eventWeightSum = new HashMap<>();
+    private final Map<Long, Map<Long, Double>> twoEventsMinSum = new HashMap<>();
 
     @Override
     public List<EventSimilarityAvro> aggregationUserAction(SpecificRecordBase userActionAvro) {

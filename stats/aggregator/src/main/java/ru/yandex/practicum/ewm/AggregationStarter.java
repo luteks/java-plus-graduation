@@ -93,6 +93,7 @@ public class AggregationStarter {
                     sim
             ));
         }
+        producer.flush();
     }
 
     private static void manageOffsets(

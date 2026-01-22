@@ -7,17 +7,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import ru.yandex.practicum.client.AnalyzerClient;
 import ru.yandex.practicum.client.CollectorClient;
 import ru.yandex.practicum.comment.repository.CommentRepository;
 import ru.yandex.practicum.dto.*;
 import ru.yandex.practicum.event.dto.*;
 import ru.yandex.practicum.event.mapper.EventMapper;
-import ru.yandex.practicum.event.model.*;
-import ru.yandex.practicum.ewm.stats.messages.RecommendedEventProto;
+import ru.yandex.practicum.event.model.AdminStateAction;
+import ru.yandex.practicum.event.model.Event;
+import ru.yandex.practicum.event.model.Location;
+import ru.yandex.practicum.event.model.PrivateStateAction;
 import ru.yandex.practicum.event.repository.EventRepository;
 import ru.yandex.practicum.event.repository.LocationRepository;
+import ru.yandex.practicum.ewm.stats.messages.RecommendedEventProto;
 import ru.yandex.practicum.exception.ConditionNotMetException;
 import ru.yandex.practicum.exception.EntityNotFoundException;
 import ru.yandex.practicum.exception.InitiatorRequestException;
@@ -48,6 +50,7 @@ public class EventServiceImpl implements EventService {
     private final CommentRepository commentRepository;
     private final AnalyzerClient analyzerClient;
     private final CollectorClient collectorClient;
+
     @Override
     public List<EventShortDto> getAllEvents(ReqParam reqParam) {
         Pageable pageable = PageRequest.of(reqParam.getFrom(), reqParam.getSize());
@@ -321,8 +324,6 @@ public class EventServiceImpl implements EventService {
     }
 
 
-
-
     private void checkEvent(Event event, UpdateEventBaseRequest updateRequest) {
         if (updateRequest.getAnnotation() != null && !updateRequest.getAnnotation().isBlank()) {
             event.setAnnotation(updateRequest.getAnnotation());
@@ -357,6 +358,7 @@ public class EventServiceImpl implements EventService {
             event.setTitle(updateRequest.getTitle());
         }
     }
+
     private List<EventFullDto> addRequests(List<EventFullDto> eventDtos) {
         List<Long> eventIds = eventDtos.stream().map(EventFullDto::getId).toList();
         List<ParticipationRequestDto> requests;
@@ -438,6 +440,7 @@ public class EventServiceImpl implements EventService {
         log.info("Добавляем пользователей: {}", dtos);
         return dtos;
     }
+
     private List<EventFullDto> addRating(List<EventFullDto> events) {
         Map<Long, Double> ratings = analyzerClient
                 .getInteractionsCount(events.stream().map(EventFullDto::getId).collect(Collectors.toList()));

@@ -18,7 +18,7 @@ public class AnalyzerStarter implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Thread eventSimilarityThread = new Thread(eventSimilarityProcessor);
         eventSimilarityThread.setName("eventSimilarityHandlerThread");
         log.info("{}: Запуск EventSimilarityProcessor", AnalyzerStarter.class.getSimpleName());

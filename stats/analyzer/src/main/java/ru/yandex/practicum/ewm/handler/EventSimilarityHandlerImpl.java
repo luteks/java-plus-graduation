@@ -18,12 +18,14 @@ public class EventSimilarityHandlerImpl implements EventSimilarityHandler {
     @Override
     public void handleEventSimilarity(EventSimilarityAvro avro) {
         EventSimilarity similarity = similarityMapper.mapToEventSimilarity(avro);
-        if (!similarityRepository.existsByEventAAndEventB(similarity.getEventA(), similarity.getEventB())) {
+
+        EventSimilarity oldSimilarity = similarityRepository
+                .findByEventAAndEventB(similarity.getEventA(), similarity.getEventB())
+                .orElse(null);
+        if (oldSimilarity == null) {
             similarity = similarityRepository.save(similarity);
             log.info("Сохранить новое сходство: {}", similarity);
         } else {
-            EventSimilarity oldSimilarity = similarityRepository
-                    .findByEventAAndEventB(similarity.getEventA(), similarity.getEventB()).get();
             log.info("Найти в БД старое сходство: {}", oldSimilarity);
             if (similarity.getScore() > oldSimilarity.getScore()) {
                 oldSimilarity.setScore(similarity.getScore());

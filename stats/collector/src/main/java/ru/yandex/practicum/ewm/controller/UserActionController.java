@@ -25,7 +25,7 @@ public class UserActionController extends UserActionControllerGrpc.UserActionCon
             collectorService.collectUserAction(request);
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Ошибка при получении нового действия: {}, ошибка: {}", request, e.getMessage(), e);
             responseObserver.onError(new StatusRuntimeException(
                     Status.INTERNAL

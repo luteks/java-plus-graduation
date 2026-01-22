@@ -5,7 +5,6 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Properties;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Configuration
@@ -44,7 +41,7 @@ public class KafkaClientConfig {
                 log.info("Готовим отправку в Kafka | topic='{}', eventId={}, timestamp={}, schema={}, partition=null",
                         topic, eventId, timestamp, event != null ? event.getSchema().getName() : "null");
                 try {
-                    Future<RecordMetadata> recordMetadataFuture = kafkaProducer.send(record, (metadata, exception) -> {
+                    kafkaProducer.send(record, (metadata, exception) -> {
                         if (exception != null) {
                             log.error("Ошибка при отправке сообщения в Kafka | topic={}, eventId={}, ошибка: {}",
                                     topic, eventId, exception.getMessage(), exception);
